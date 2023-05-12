@@ -19,9 +19,11 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@fastify/static": "^6.10.1",
     "@nestjs/common": "^9.4.0",
     "@nestjs/core": "^9.0.5",
     "@nestjs/platform-fastify": "^9.4.0",
+    "@nestjs/swagger": "^6.3.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.5.5"
   },
@@ -29,6 +31,7 @@
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",
+    "@types/babel__core": "^7.20.0",
     "@types/jest": "^29.5.1",
     "@types/node": "^18.0.3",
     "@types/supertest": "^2.0.12",
