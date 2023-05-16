@@ -1,12 +1,12 @@
 import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
-import { UserService } from './users.service';
-import { UserDto } from './users.dto';
+import { UsersService } from './users.service';
 import { ApiTags } from '@nestjs/swagger';
+import { UserDto } from 'src/domain/dtos/user.dto';
 
 @Controller('users')
 @ApiTags('Users')
 export class UsersController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UsersService) {}
 
   @Get()
   async getAllUsers(): Promise<UserDto[]> {
@@ -15,24 +15,24 @@ export class UsersController {
 
   @Get(':id')
   async getUserById(@Param('id') id: string): Promise<UserDto> {
-    return this.userService.getUserById(id);
+    return this.userService.getUserById(parseInt(id));
   }
 
-  @Post()
-  async createUser(@Body() user: UserDto): Promise<UserDto> {
-    return this.userService.createUser(user);
+  @Get('email/:email')
+  async getUserByEmail(@Param('email') email: string): Promise<UserDto> {
+    return this.userService.getUserByEmail(email);
   }
 
   @Put(':id')
   async updateUser(
     @Param('id') id: string,
     @Body() user: UserDto,
-  ): Promise<UserDto> {
-    return this.userService.updateUser(id, user);
+  ): Promise<void> {
+    await this.userService.updateUser(parseInt(id), user);
   }
 
   @Delete(':id')
   async deleteUser(@Param('id') id: string): Promise<void> {
-    return this.userService.deleteUser(id);
+    await this.userService.deleteUser(parseInt(id));
   }
 }
