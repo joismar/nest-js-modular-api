@@ -1,36 +1,16 @@
-import { Injectable } from '@nestjs/common';
-import { UserDto } from 'src/domain/dtos/user.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { User } from '@prisma/client';
+import { Inject, Injectable } from '@nestjs/common';
+import { IUserRepository, USER_REPOSITORY } from 'src/shared/interfaces/user-repository.interface';
+import { GetUserDto } from 'src/users/dtos/get-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    @Inject(USER_REPOSITORY)
+    private readonly usersRepository: IUserRepository
+  ) {}
 
-  async getAllUsers(): Promise<User[]> {
-    return this.prisma.user.findMany();
-  }
-
-  async getUserById(id: number): Promise<User> {
-    return this.prisma.user.findUnique({ where: { id } });
-  }
-
-  async getUserByEmail(email: string): Promise<User> {
-    return this.prisma.user.findUnique({ where: { email } });
-  }
-
-  async createUser(user: UserDto): Promise<User> {
-    return this.prisma.user.create({ data: user });
-  }
-
-  async updateUser(id: number, updatedUser: UserDto): Promise<void> {
-    await this.prisma.user.update({
-      where: { id },
-      data: updatedUser,
-    });
-  }
-
-  async deleteUser(id: number): Promise<void> {
-    await this.prisma.user.delete({ where: { id } });
+  async getUserByEmail(email: string): Promise<GetUserDto> {
+    var user = await this.usersRepository.findOne({ email })
+    return {name: user.name, email: user.email}
   }
 }
