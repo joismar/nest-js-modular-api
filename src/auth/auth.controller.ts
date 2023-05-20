@@ -1,8 +1,9 @@
 import { Body, Controller, Post, HttpCode, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginDto } from 'src/auth/dtos/login.dto';
 import { SignUpDto } from './dtos/signup.dto';
+import { LoginResponse } from './responses/login.response';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -10,9 +11,10 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @HttpCode(HttpStatus.OK)
+  @ApiResponse({ status: 200, type: LoginResponse })
   @Post('login')
-  signIn(@Body() loginDto: LoginDto) {
-    return this.authService.signIn(loginDto.email, loginDto.password);
+  async signIn(@Body() loginDto: LoginDto): Promise<LoginResponse> {
+    return await this.authService.signIn(loginDto.email, loginDto.password) as LoginResponse;
   }
 
   @HttpCode(HttpStatus.OK)
