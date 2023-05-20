@@ -24,6 +24,7 @@ export class DatabaseUserRepository implements IUserRepository {
       name: user.name,
       email: user.email,
       password: user.password,
+      privatedField: 'FOR TESTING PURPOSES'
     }
   }
 }

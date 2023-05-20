@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards, Request } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { GetUserDto } from 'src/users/dtos/get-user.dto';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { GetUserResponse } from 'src/users/responses/get-user.response';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { GetProfileResponse } from './responses/get-profile.response';
 
 @Controller('users')
 @ApiTags('Users')
@@ -9,8 +11,18 @@ export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
   @Get('/')
-  @ApiResponse({status: 200, type: GetUserDto})
-  async getUserByEmail(@Query('email') email: string): Promise<GetUserDto> {
-    return this.userService.getUserByEmail(email);
+  @ApiResponse({status: 200, type: GetUserResponse})
+  async getUserByEmail(@Query('email') email: string): Promise<GetUserResponse> {
+    const user = await this.userService.getUserByEmail(email);
+    return {email: user.email, name: user.name}
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Get('profile')
+  @ApiResponse({status: 200, type: GetProfileResponse})
+  async getProfile(@Request() req): Promise<GetProfileResponse> {
+    const user = await this.userService.getUserByEmail(req.user.email);
+    return {email: user.email, name: user.name, privateField: user.privatedField}
   }
 }
