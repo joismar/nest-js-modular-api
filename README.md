@@ -2,7 +2,7 @@
 
 ## Descrição
 
-Esse projeto define um boilerplate de uma REST API modular feita com NestJS + Fastify.
+Esse projeto define um boilerplate de uma REST API modular feita em NestJS (Fastify).
 
 ## Tecnologias
 - [NestJS](https://docs.nestjs.com/)
