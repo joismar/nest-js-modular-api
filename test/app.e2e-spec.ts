@@ -1,28 +1,45 @@
+import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
-import { Test } from '@nestjs/testing';
-import { AppModule } from './../src/app.module';
-import { INestApplication } from '@nestjs/common';
+import { AppModule } from '../src/app.module';
+import {
+  FastifyAdapter,
+  NestFastifyApplication,
+} from '@nestjs/platform-fastify';
 
-describe('AppController (e2e)', () => {
-  let app: INestApplication;
+describe('Test (e2e)', () => {
+  let app: NestFastifyApplication;
 
-  beforeAll(async () => {
-    const moduleFixture = await Test.createTestingModule({
+  beforeEach(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
-    app = moduleFixture.createNestApplication();
+    app = moduleFixture.createNestApplication<NestFastifyApplication>(
+      new FastifyAdapter(),
+    );
     await app.init();
+    await app.getHttpAdapter().getInstance().ready();
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await app.close();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+  describe('AppController (e2e)', () => {
+    it('/ (GET)', () => {
+      return request(app.getHttpServer())
+        .get('/')
+        .expect(200)
+        .expect('Hello! The server is healthy.');
+    });
+  });
+
+  describe('AuthController (e2e)', () => {
+    it('/auth/signup (POST)', () => {
+      return request(app.getHttpServer())
+        .post('/auth/signup')
+        .send({ name: 'any', email: 'any', password: 'any' })
+        .expect(200);
+    });
   });
 });
