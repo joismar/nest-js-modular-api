@@ -17,13 +17,17 @@ Esse projeto define um boilerplate de uma REST API modular feita em NestJS (Fast
 ### Dependencias
 ```bash
 $ yarn install
+# para gerar o cliente e os modelos do prisma
+$ yarn prisma generate 
 ```
+`Obs: em alguns casos é necessário reiniciar o VSCode para as importações geradas pelo Prisma começarem a funcionar.`
 ### Banco de dados (Prisma)
 ```bash
 # para subir o banco
 $ docker-compose up -d
 
 # para aplicar as migrações no banco
+$ yarn prisma db push # para sincronizar as configurações do banco de dados com o prisma
 $ yarn prisma db pull
 
 # o prisma fornece um ambiente web para manipular entidades e facilitar o desenvolvimento, execute o comando abaixo para abrir
