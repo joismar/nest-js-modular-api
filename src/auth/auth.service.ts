@@ -2,8 +2,11 @@ import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { hashSync, compareSync, genSaltSync } from 'bcrypt';
 import { SignUpDto } from './dtos/signup.dto';
-import { UserDto } from 'src/users/dtos/user.dto';
-import { IUserRepository, USER_REPOSITORY } from 'src/shared/interfaces/user-repository.interface';
+import { UserDto } from '../users/dtos/user.dto';
+import {
+  IUserRepository,
+  USER_REPOSITORY,
+} from '../shared/interfaces/user-repository.interface';
 
 @Injectable()
 export class AuthService {
@@ -24,7 +27,7 @@ export class AuthService {
   }
 
   async signIn(email: string, pass: string): Promise<any> {
-    const user = await this.usersRepository.findOne({ email })
+    const user = await this.usersRepository.findOne({ email });
     if (!user || !this.comparePasswords(pass, user.password)) {
       throw new UnauthorizedException();
     }
@@ -41,17 +44,17 @@ export class AuthService {
     return hashSync(password, salt);
   }
 
-  private comparePasswords(plainPassword: string, encryptedPassword: string): boolean {
+  private comparePasswords(
+    plainPassword: string,
+    encryptedPassword: string,
+  ): boolean {
     return compareSync(plainPassword, encryptedPassword);
   }
 
   private generateToken(user: any): string {
     const payload = { email: user.email, id: user.id };
-    return this.jwtService.sign(
-      payload,
-      {
-        expiresIn: '1d'
-      }
-    );
+    return this.jwtService.sign(payload, {
+      expiresIn: '1d',
+    });
   }
 }
